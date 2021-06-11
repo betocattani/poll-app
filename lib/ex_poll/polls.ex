@@ -36,9 +36,9 @@ defmodule ExPoll.Polls do
 
   """
   def get_poll!(id) do
-    Poll
-    |> Repo.get!(id)
-    |> Repo.preload(:options)
+    id
+    |> poll_with_options_query()
+    |> Repo.one!
   end
 
   @doc """
@@ -58,7 +58,7 @@ defmodule ExPoll.Polls do
     |> Poll.changeset(attrs)
     |> Repo.insert()
     |> case do
-      {:ok, %Poll{} = poll} -> {:ok, Repo.preload(poll, :options)}
+      {:ok, %Poll{} = poll} -> {:ok, Repo.preload(poll, options: options_query())}
       error -> error
     end
   end
@@ -126,7 +126,11 @@ defmodule ExPoll.Polls do
       ** (Ecto.NoResultsError)
 
   """
-  def get_option!(id), do: Repo.get!(Option, id)
+  def get_option!(id) do
+    id
+    |> options_query()
+    |> Repo.one!
+  end
 
   @doc """
   Creates a option.
@@ -192,5 +196,56 @@ defmodule ExPoll.Polls do
   """
   def change_option(%Option{} = option, attrs \\ %{}) do
     Option.changeset(option, attrs)
+  end
+
+  alias ExPoll.Polls.Vote
+  @doc """
+  Creates a vote.
+
+  ## Examples
+
+      iex> create_vote(%{field: value})
+      {:ok, %Vote{}}
+
+      iex> create_vote(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_vote(%Option{} = option) do
+    option
+    |> Ecto.build_assoc(:votes)
+    |> change_vote()
+    |> Repo.insert()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking vote changes.
+
+  ## Examples
+
+      iex> change_vote(vote)
+      %Ecto.Changeset{data: %Vote{}}
+
+  """
+  def change_vote(%Vote{} = vote, attrs \\ %{}) do
+    Vote.changeset(vote, attrs)
+  end
+
+  defp poll_with_options_query(id) do
+    from p in Poll,
+      where: p.id == ^id,
+      preload: [options: ^options_query()]
+  end
+
+  defp options_query do
+    from o in Option,
+      left_join: v in assoc(o, :votes),
+      group_by: o.id,
+      select_merge: %{vote_count: count(v.id)}
+  end
+
+  defp options_query(id) do
+    from o in options_query(),
+      where: o.id == ^id
   end
 end
