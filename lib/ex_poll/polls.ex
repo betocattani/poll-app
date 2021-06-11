@@ -35,7 +35,11 @@ defmodule ExPoll.Polls do
       ** (Ecto.NoResultsError)
 
   """
-  def get_poll!(id), do: Repo.get!(Poll, id)
+  def get_poll!(id) do
+    Poll
+    |> Repo.get!(id)
+    |> Repo.preload(:options)
+  end
 
   @doc """
   Creates a poll.
@@ -53,6 +57,10 @@ defmodule ExPoll.Polls do
     %Poll{}
     |> Poll.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, %Poll{} = poll} -> {:ok, Repo.preload(poll, :options)}
+      error -> error
+    end
   end
 
   @doc """
@@ -105,19 +113,6 @@ defmodule ExPoll.Polls do
   alias ExPoll.Polls.Option
 
   @doc """
-  Returns the list of options.
-
-  ## Examples
-
-      iex> list_options()
-      [%Option{}, ...]
-
-  """
-  def list_options do
-    Repo.all(Option)
-  end
-
-  @doc """
   Gets a single option.
 
   Raises `Ecto.NoResultsError` if the Option does not exist.
@@ -145,8 +140,9 @@ defmodule ExPoll.Polls do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_option(attrs \\ %{}) do
-    %Option{}
+  def create_option(%Poll{} = poll, attrs \\ %{}) do
+    poll
+    |> Ecto.build_assoc(:options)
     |> Option.changeset(attrs)
     |> Repo.insert()
   end
