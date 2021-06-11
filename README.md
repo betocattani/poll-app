@@ -1,19 +1,41 @@
 # ExPoll
 
 To start your Phoenix server:
-
+  * Clone the project  `git clone <url>`
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.setup`
   * Start Phoenix endpoint with `mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+Endpoints
+### Create a new poll
+```bash
+$ curl -H "Content-Type: application/json" -X POST -d '{"poll":{"question":"What is your favorite band?"}}' http://localhost:4000/api/polls
+=> {"data":{"id":1,"question":"What is your favorite band?"}}
+```
 
-## Learn more
+### Get all poll
+```bash
+$ curl -H "Content-Type: application/json" -X GET http://localhost:4000/api/polls
+=> {"data":[{"id":1,"question":"What do you will eat today?"},{"id":2,"question":"What is your favorite band?"}]}%
+```
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+### Get a poll by id
+```bash
+$ curl -H "Content-Type: application/json" -X GET http://localhost:4000/api/polls/2
+=> {"data":{"id":2,"options":[{"id":1,"value":"Pantera","vote_count":2},{"id":2,"value":"Hatebreed","vote_count":1}],"question":"What is your favorite band?"}}%
+```
+
+### Create options for a vote
+```bash
+$ curl -H "Content-Type: application/json" -X POST -d '{"option":{"value":"Planet Hemp"}}' http://localhost:4000/api/polls/2/options
+{"data":{"id":12,"value":"Planet Hemp"}}
+```
+
+### Get option by id about a poll
+```bash
+curl -H "Content-Type: application/json" -X GET http://localhost:4000/api/polls/4/options/1
+
+{"data":{"id":1,"value":"Pantera"}}
+```
