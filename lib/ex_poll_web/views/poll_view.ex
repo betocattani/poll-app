@@ -10,6 +10,13 @@ defmodule ExPollWeb.PollView do
     %{data: render_one(poll, PollView, "poll_with_options.json")}
   end
 
+  def render("poll.json", %{poll: poll}) do
+    %{
+      id: poll.id,
+      question: poll.question
+    }
+  end
+
   def render("poll_with_options.json", %{poll: poll}) do
     %{
       id: poll.id,
