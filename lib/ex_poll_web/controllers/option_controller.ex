@@ -13,6 +13,7 @@ defmodule ExPollWeb.OptionController do
 
   def create(conn, %{"poll_id" => poll_id, "option" => option_params}) do
     poll = Polls.get_poll!(poll_id)
+
     with {:ok, %Option{} = option} <- Polls.create_option(poll, option_params) do
       conn
       |> put_status(:created)

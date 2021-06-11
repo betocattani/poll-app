@@ -4,12 +4,8 @@ defmodule ExPollWeb.PollControllerTest do
   alias ExPoll.Polls
   alias ExPoll.Polls.Poll
 
-  @create_attrs %{
-    question: "some question"
-  }
-  @update_attrs %{
-    question: "some updated question"
-  }
+  @create_attrs %{question: "some question"}
+  @update_attrs %{question: "some updated question"}
   @invalid_attrs %{question: nil}
 
   def fixture(:poll) do
@@ -36,7 +32,7 @@ defmodule ExPollWeb.PollControllerTest do
       conn = get(conn, Routes.poll_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "id" => ^id,
                "question" => "some question"
              } = json_response(conn, 200)["data"]
     end
@@ -57,7 +53,7 @@ defmodule ExPollWeb.PollControllerTest do
       conn = get(conn, Routes.poll_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "id" => ^id,
                "question" => "some updated question"
              } = json_response(conn, 200)["data"]
     end

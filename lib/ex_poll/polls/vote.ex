@@ -5,9 +5,9 @@ defmodule ExPoll.Polls.Vote do
   alias ExPoll.Polls.Option
 
   schema "votes" do
-    belongs_to(:option, Option)
-
     timestamps()
+
+    belongs_to(:option, Option)
   end
 
   @doc false

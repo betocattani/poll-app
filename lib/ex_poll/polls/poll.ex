@@ -6,9 +6,9 @@ defmodule ExPoll.Polls.Poll do
 
   schema "polls" do
     field :question, :string
-    has_many(:options, Option, on_replace: :delete)
-
     timestamps()
+
+    has_many(:options, Option, on_replace: :delete)
   end
 
   @doc false

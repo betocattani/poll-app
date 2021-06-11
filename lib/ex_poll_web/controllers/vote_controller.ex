@@ -12,6 +12,7 @@ defmodule ExPollWeb.VoteController do
 
     with {:ok, %Vote{} = vote} <- Polls.create_vote(option) do
       Endpoint.broadcast!("poll:" <> id, "new_vote", %{option_id: option.id})
+
       conn
       |> put_status(:created)
       |> render("show.json", vote: vote)
