@@ -9,25 +9,25 @@ To start your Phoenix server:
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Endpoints
-### Create a new poll
+### Create a new Poll
 ```bash
 $ curl -H "Content-Type: application/json" -X POST -d '{"poll":{"question":"What is your favorite band?"}}' http://localhost:4000/api/polls
 => {"data":{"id":1,"question":"What is your favorite band?"}}
 ```
 
-### Get all poll
+### Get all Polls
 ```bash
 $ curl -H "Content-Type: application/json" -X GET http://localhost:4000/api/polls
 => {"data":[{"id":1,"question":"What do you will eat today?"},{"id":2,"question":"What is your favorite band?"}]}%
 ```
 
-### Get a poll by id
+### Get a Poll by id
 ```bash
 $ curl -H "Content-Type: application/json" -X GET http://localhost:4000/api/polls/2
 => {"data":{"id":2,"options":[{"id":1,"value":"Pantera","vote_count":2},{"id":2,"value":"Hatebreed","vote_count":1}],"question":"What is your favorite band?"}}%
 ```
 
-### Create options for a vote
+### Create options for a Poll
 ```bash
 $ curl -H "Content-Type: application/json" -X POST -d '{"option":{"value":"Planet Hemp"}}' http://localhost:4000/api/polls/2/options
 {"data":{"id":12,"value":"Planet Hemp"}}
